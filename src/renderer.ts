@@ -28,4 +28,13 @@
 
 import "./index.css";
 
+// Get API exposed through preload script
+declare const versions: {
+  node: () => string;
+  chrome: () => string;
+  electron: () => string;
+};
+
 console.log("👋 This message is being logged by \"renderer.ts\", included via Vite");
+const information = document.getElementById("info");
+information.textContent = `This application is using Chrome (v${versions.chrome()}), Node.js (v${versions.node()}), and Electron (v${versions.electron()})`;
