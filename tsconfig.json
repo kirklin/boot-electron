@@ -1,9 +1,14 @@
 {
   "compilerOptions": {
     "target": "ESNext",
+    "jsx": "react-jsx",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "baseUrl": ".",
     "module": "commonjs",
     "moduleResolution": "node",
+    "paths": {
+      "@renderer/*": ["src/renderer/*"]
+    },
     "resolveJsonModule": true,
     "allowJs": true,
     "noImplicitAny": true,
@@ -11,5 +16,6 @@
     "sourceMap": true,
     "esModuleInterop": true,
     "skipLibCheck": true
-  }
+  },
+  "include": ["src/**/*"]
 }
