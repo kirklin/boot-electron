@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "baseUrl": ".",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "noImplicitAny": true,
+    "outDir": "dist",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  }
+}
