@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "~/renderer/components/ui/button";
 
 // Get API exposed through preload script
 declare const versions: {
@@ -19,6 +20,9 @@ const App: React.FC = () => {
           </div>
           <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">💖 Hello World!</h1>
           <p className="text-center text-gray-600 mb-6">Welcome to your Electron application</p>
+          <div className="text-center mb-6">
+            <Button>Click Me</Button>
+          </div>
 
           <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
             <div className="flex items-center space-x-2 text-sm">

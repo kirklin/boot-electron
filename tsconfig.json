@@ -7,7 +7,9 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "paths": {
-      "@renderer/*": ["src/renderer/*"]
+      "~/*": [
+        "./src/*"
+      ]
     },
     "resolveJsonModule": true,
     "allowJs": true,
