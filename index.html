@@ -3,7 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Electron with React</title>
+
+    <!--
+      https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
+
+      Current configuration allows loading resources from any source ('self' and *):
+        - default-src 'self' *: Allows loading resources from same origin and any other source
+        - script-src 'self' *: Allows loading scripts from same origin and any other source
+        - style-src 'self' 'unsafe-inline' *: Allows loading styles from same origin, inline styles, and any other source
+
+      If you want to restrict the sources from where you can load resources, use a stricter configuration:
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'" />
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self' *; script-src 'self' *; style-src 'self' 'unsafe-inline' *;"
+    />
+    <title>Boot Electron</title>
   </head>
   <body>
     <div id="root"></div>
