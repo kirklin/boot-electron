@@ -6,6 +6,7 @@ import { ServiceIdentifiers } from "./core/service-identifiers";
 import { WindowManager } from "./core/window-manager";
 import { EnvironmentService } from "./features/environment/environment-service";
 import { SettingsService } from "./features/settings/settings-service";
+import { ShortcutsService } from "./features/shortcuts/shortcuts-service";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -17,15 +18,23 @@ const windowManager = new WindowManager();
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on("ready", () => {
+app.on("ready", async () => {
   // Register all services before initializing anything else
   container.register(ServiceIdentifiers.IEnvironmentService, new EnvironmentService());
   container.register(ServiceIdentifiers.ISettingsService, new SettingsService());
+  const shortcutsService = new ShortcutsService();
+  container.register(ServiceIdentifiers.IShortcutsService, shortcutsService);
+
+  // Initialize services
+  await shortcutsService.initialize();
 
   windowManager.createWindow();
 
   const ipcRouter = new IpcRouter();
   ipcRouter.initialize();
+
+  // Register all shortcuts after initialization
+  shortcutsService.registerAll();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

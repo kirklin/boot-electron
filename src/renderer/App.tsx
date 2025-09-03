@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "~/renderer/components/ui/button";
 import { SettingsPage } from "./features/settings/SettingsPage";
+import { ShortcutsPage } from "./features/shortcuts/ShortcutsPage";
 
 interface EnvironmentInfo {
   chromeVersion: string;
@@ -55,6 +56,9 @@ const App: React.FC = () => {
           </div>
           <div className="p-8 border-t border-gray-200">
             <SettingsPage />
+            <div className="p-8 border-t border-gray-200">
+              <ShortcutsPage />
+            </div>
           </div>
         </div>
         <div className="px-8 py-4 bg-gray-50 border-t border-gray-100">
