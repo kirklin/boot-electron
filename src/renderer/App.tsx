@@ -1,12 +1,6 @@
 import React from "react";
 import { Button } from "~/renderer/components/ui/button";
-
-// Get API exposed through preload script
-declare const versions: {
-  node: () => string;
-  chrome: () => string;
-  electron: () => string;
-};
+import { SettingsPage } from "./features/settings/SettingsPage";
 
 const App: React.FC = () => {
   return (
@@ -29,23 +23,26 @@ const App: React.FC = () => {
               <span className="font-medium text-gray-500">Chrome:</span>
               <span className="text-gray-700">
                 v
-                {versions.chrome()}
+                {window.api.versions.chrome()}
               </span>
             </div>
             <div className="flex items-center space-x-2 text-sm">
               <span className="font-medium text-gray-500">Node.js:</span>
               <span className="text-gray-700">
                 v
-                {versions.node()}
+                {window.api.versions.node()}
               </span>
             </div>
             <div className="flex items-center space-x-2 text-sm">
               <span className="font-medium text-gray-500">Electron:</span>
               <span className="text-gray-700">
                 v
-                {versions.electron()}
+                {window.api.versions.electron()}
               </span>
             </div>
+          </div>
+          <div className="p-8 border-t border-gray-200">
+            <SettingsPage />
           </div>
         </div>
         <div className="px-8 py-4 bg-gray-50 border-t border-gray-100">
