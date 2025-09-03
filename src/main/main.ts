@@ -1,7 +1,9 @@
-import path from "node:path";
 import { app, BrowserWindow } from "electron";
 import started from "electron-squirrel-startup";
+import { container } from "./core/container";
+import { EnvironmentService } from "./core/environment-service";
 import { IpcRouter } from "./core/ipc-router";
+import { ServiceIdentifiers } from "./core/service-identifiers";
 import { WindowManager } from "./core/window-manager";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -15,8 +17,11 @@ const windowManager = new WindowManager();
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
-  console.log("User Data Path:", app.getPath("userData"));
+  // Register all services before initializing anything else
+  container.register(ServiceIdentifiers.IEnvironmentService, new EnvironmentService());
+
   windowManager.createWindow();
+
   const ipcRouter = new IpcRouter();
   ipcRouter.initialize();
 });
