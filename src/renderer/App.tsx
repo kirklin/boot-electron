@@ -1,8 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "~/renderer/components/ui/button";
 import { SettingsPage } from "./features/settings/SettingsPage";
 
+interface EnvironmentInfo {
+  chromeVersion: string;
+  nodeVersion: string;
+  electronVersion: string;
+}
+
 const App: React.FC = () => {
+  const [envInfo, setEnvInfo] = useState<EnvironmentInfo | null>(null);
+
+  useEffect(() => {
+    window.api.environment.getEnvironment().then(setEnvInfo);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center p-6">
       <div className="max-w-md w-full bg-white rounded-xl shadow-2xl overflow-hidden">
@@ -23,21 +35,21 @@ const App: React.FC = () => {
               <span className="font-medium text-gray-500">Chrome:</span>
               <span className="text-gray-700">
                 v
-                {window.api.versions.chrome()}
+                {envInfo?.chromeVersion ?? "..."}
               </span>
             </div>
             <div className="flex items-center space-x-2 text-sm">
               <span className="font-medium text-gray-500">Node.js:</span>
               <span className="text-gray-700">
                 v
-                {window.api.versions.node()}
+                {envInfo?.nodeVersion ?? "..."}
               </span>
             </div>
             <div className="flex items-center space-x-2 text-sm">
               <span className="font-medium text-gray-500">Electron:</span>
               <span className="text-gray-700">
                 v
-                {window.api.versions.electron()}
+                {envInfo?.electronVersion ?? "..."}
               </span>
             </div>
           </div>

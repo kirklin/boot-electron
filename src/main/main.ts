@@ -1,10 +1,11 @@
 import { app, BrowserWindow } from "electron";
 import started from "electron-squirrel-startup";
 import { container } from "./core/container";
-import { EnvironmentService } from "./core/environment-service";
 import { IpcRouter } from "./core/ipc-router";
 import { ServiceIdentifiers } from "./core/service-identifiers";
 import { WindowManager } from "./core/window-manager";
+import { EnvironmentService } from "./features/environment/environment-service";
+import { SettingsService } from "./features/settings/settings-service";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -19,6 +20,7 @@ const windowManager = new WindowManager();
 app.on("ready", () => {
   // Register all services before initializing anything else
   container.register(ServiceIdentifiers.IEnvironmentService, new EnvironmentService());
+  container.register(ServiceIdentifiers.ISettingsService, new SettingsService());
 
   windowManager.createWindow();
 

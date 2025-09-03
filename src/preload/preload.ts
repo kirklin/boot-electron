@@ -1,9 +1,9 @@
 import { contextBridge } from "electron";
+import { environmentApi } from "./apis/environment-api";
 import { settingsApi } from "./apis/settings-api";
-import { versionsApi } from "./apis/versions-api";
 
 const api = {
-  versions: versionsApi,
+  environment: environmentApi,
   settings: settingsApi,
 };
 

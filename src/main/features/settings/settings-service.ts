@@ -1,4 +1,4 @@
-import type { IEnvironmentService } from "~/main/core/environment-service";
+import type { IEnvironmentService } from "~/main/features/environment/environment-service";
 import type { AppSettings } from "~/shared/types/settings";
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -9,7 +9,12 @@ const DEFAULT_SETTINGS: AppSettings = {
   theme: "system",
 };
 
-export class SettingsService {
+export interface ISettingsService {
+  getSettings: () => Promise<AppSettings>;
+  saveSettings: (settings: AppSettings) => Promise<void>;
+}
+
+export class SettingsService implements ISettingsService {
   private readonly envService: IEnvironmentService;
   private readonly settingsFile: string;
 

@@ -1,11 +1,22 @@
 import type { AppSettings } from "~/shared/types/settings";
 import React, { useEffect, useState } from "react";
 
+interface EnvironmentInfo {
+  appName: string;
+  appVersion: string;
+  isDev: boolean;
+  nodeVersion: string;
+  chromeVersion: string;
+  electronVersion: string;
+}
+
 export const SettingsPage: React.FC = () => {
   const [settings, setSettings] = useState<AppSettings | null>(null);
+  const [envInfo, setEnvInfo] = useState<EnvironmentInfo | null>(null);
 
   useEffect(() => {
     window.api.settings.get().then(setSettings);
+    window.api.environment.getEnvironment().then(setEnvInfo);
   }, []);
 
   const handleThemeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -17,8 +28,8 @@ export const SettingsPage: React.FC = () => {
     }
   };
 
-  if (!settings) {
-    return <div>Loading settings...</div>;
+  if (!settings || !envInfo) {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -40,6 +51,30 @@ export const SettingsPage: React.FC = () => {
             <option value="dark">Dark</option>
           </select>
         </div>
+      </div>
+
+      <div className="mt-8">
+        <h3 className="text-lg font-medium">About</h3>
+        <p className="text-sm text-gray-500">
+          {envInfo.appName}
+          {" "}
+          v
+          {envInfo.appVersion}
+        </p>
+        <ul className="text-sm text-gray-500">
+          <li>
+            Electron:
+            {envInfo.electronVersion}
+          </li>
+          <li>
+            Chrome:
+            {envInfo.chromeVersion}
+          </li>
+          <li>
+            Node.js:
+            {envInfo.nodeVersion}
+          </li>
+        </ul>
       </div>
     </div>
   );
