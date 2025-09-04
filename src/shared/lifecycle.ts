@@ -86,7 +86,6 @@ export function toDisposable(fn: () => void): IDisposable {
 /**
  * A disposable that does nothing when it is disposed of.
  */
-export const DisposableNone = Object.freeze<IDisposable>({ dispose() { /* noop */ } });
 
 /**
  * Manages a collection of disposable values.
@@ -121,7 +120,7 @@ export class DisposableStore implements IDisposable {
    * Adds a new {@link IDisposable disposable} to the collection.
    */
   public add<T extends IDisposable>(o: T): T {
-    if (!o || o === DisposableNone) {
+    if (!o) {
       return o;
     }
     if ((o as unknown as DisposableStore) === this) {
@@ -144,6 +143,11 @@ export class DisposableStore implements IDisposable {
  * Subclasses can {@linkcode _register} disposables that will be automatically cleaned up when this object is disposed of.
  */
 export abstract class Disposable implements IDisposable {
+  /**
+   * A disposable that does nothing when it is disposed of.
+   */
+  static readonly None = Object.freeze<IDisposable>({ dispose() { /* noop */ } });
+
   protected readonly _store = new DisposableStore();
 
   public dispose(): void {
