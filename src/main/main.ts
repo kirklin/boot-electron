@@ -5,6 +5,8 @@ import { container } from "./core/container";
 import { IpcRouter } from "./core/ipc-router";
 import { ServiceIdentifiers } from "./core/service-identifiers";
 import { WindowManager } from "./core/window-manager";
+import { registerBuiltinCommands } from "./features/commands/commands-builtin";
+import { CommandsService } from "./features/commands/commands-service";
 import { EnvironmentService } from "./features/environment/environment-service";
 import { SettingsService } from "./features/settings/settings-service";
 import { ShortcutsService } from "./features/shortcuts/shortcuts-service";
@@ -33,6 +35,10 @@ app.on("ready", async () => {
   disposables.add(settingsService);
   container.register(ServiceIdentifiers.ISettingsService, settingsService);
 
+  const commandService = new CommandsService();
+  disposables.add(commandService);
+  container.register(ServiceIdentifiers.ICommandService, commandService);
+
   const shortcutsService = new ShortcutsService();
   disposables.add(shortcutsService);
   container.register(ServiceIdentifiers.IShortcutsService, shortcutsService);
@@ -40,11 +46,13 @@ app.on("ready", async () => {
   // Initialize services
   await shortcutsService.initialize();
 
-  windowManager.createWindow();
+  registerBuiltinCommands();
 
   const ipcRouter = new IpcRouter();
   disposables.add(ipcRouter);
   ipcRouter.initialize();
+
+  windowManager.createWindow();
 
   // Register all shortcuts after initialization
   shortcutsService.registerAll();

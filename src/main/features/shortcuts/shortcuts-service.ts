@@ -1,10 +1,12 @@
 import type { IEnvironmentService } from "~/main/features/environment/environment-service";
+import type { ICommandService } from "~/shared/commands";
 import type { Keybinding } from "~/shared/types/shortcuts";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { app, BrowserWindow, globalShortcut } from "electron";
+import { globalShortcut } from "electron";
 import { container } from "~/main/core/container";
 import { ServiceIdentifiers } from "~/main/core/service-identifiers";
+import { BuiltinCommands } from "~/shared/constants/commands";
 import { Disposable } from "~/shared/lifecycle";
 
 export interface IShortcutsService {
@@ -14,13 +16,14 @@ export interface IShortcutsService {
 }
 
 const DEFAULT_KEYBINDINGS: Keybinding[] = [
-  { name: "Toggle Developer Tools", key: "CmdOrCtrl+Shift+I", command: "app.toggle-dev-tools", source: "default" },
-  { name: "Reload", key: "CmdOrCtrl+R", command: "app.reload", source: "default" },
-  { name: "Quit", key: "CmdOrCtrl+Q", command: "app.quit", source: "default" },
+  { name: "Toggle Developer Tools", key: "CmdOrCtrl+Shift+I", command: BuiltinCommands.TOGGLE_DEV_TOOLS, source: "default" },
+  { name: "Reload", key: "CmdOrCtrl+R", command: BuiltinCommands.RELOAD, source: "default" },
+  { name: "Quit", key: "CmdOrCtrl+Q", command: BuiltinCommands.QUIT, source: "default" },
 ];
 
 export class ShortcutsService extends Disposable implements IShortcutsService {
   private readonly envService: IEnvironmentService;
+  private readonly commandService: ICommandService;
   private readonly keybindingsFile: string;
   private keybindings: Keybinding[] = [];
 
@@ -28,6 +31,7 @@ export class ShortcutsService extends Disposable implements IShortcutsService {
     super();
     this._register({ dispose: () => globalShortcut.unregisterAll() });
     this.envService = container.get<IEnvironmentService>(ServiceIdentifiers.IEnvironmentService);
+    this.commandService = container.get<ICommandService>(ServiceIdentifiers.ICommandService);
     this.keybindingsFile = path.join(this.envService.userDataPath, "keybindings.json");
   }
 
@@ -79,21 +83,8 @@ export class ShortcutsService extends Disposable implements IShortcutsService {
   }
 
   private executeCommand(command: string): void {
-    const focusedWindow = BrowserWindow.getFocusedWindow();
-    switch (command) {
-      case "app.toggle-dev-tools":
-        if (focusedWindow) {
-          focusedWindow.webContents.toggleDevTools();
-        }
-        break;
-      case "app.reload":
-        if (focusedWindow) {
-          focusedWindow.reload();
-        }
-        break;
-      case "app.quit":
-        app.quit();
-        break;
-    }
+    this.commandService.executeCommand(command).catch((err) => {
+      console.error(`Error executing command '${command}':`, err);
+    });
   }
 }
