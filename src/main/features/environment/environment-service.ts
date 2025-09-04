@@ -1,5 +1,6 @@
 import path from "node:path";
 import { app } from "electron";
+import { singleton } from "tsyringe";
 import { Disposable } from "~/shared/lifecycle";
 import pkg from "../../../../package.json";
 
@@ -13,6 +14,7 @@ export interface IEnvironmentService {
   readonly electronVersion: string;
 }
 
+@singleton()
 export class EnvironmentService extends Disposable implements IEnvironmentService {
   get userDataPath(): string {
     return path.join(app.getPath("userData"), "User");

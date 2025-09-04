@@ -1,7 +1,8 @@
+import "reflect-metadata";
 import { app, BrowserWindow } from "electron";
 import started from "electron-squirrel-startup";
+import { container, Lifecycle } from "tsyringe";
 import { DisposableStore } from "../shared/lifecycle";
-import { container } from "./core/container";
 import { IpcRouter } from "./core/ipc-router";
 import { ServiceIdentifiers } from "./core/service-identifiers";
 import { WindowManager } from "./core/window-manager";
@@ -26,22 +27,20 @@ disposables.add(windowManager);
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
-  // Register all services before initializing anything else
-  const environmentService = new EnvironmentService();
-  disposables.add(environmentService);
-  container.register(ServiceIdentifiers.IEnvironmentService, environmentService);
+  // Register all services
+  container.register(ServiceIdentifiers.IEnvironmentService, { useClass: EnvironmentService }, { lifecycle: Lifecycle.Singleton });
+  container.register(ServiceIdentifiers.ISettingsService, { useClass: SettingsService }, { lifecycle: Lifecycle.Singleton });
+  container.register(ServiceIdentifiers.IShortcutsService, { useClass: ShortcutsService }, { lifecycle: Lifecycle.Singleton });
+  container.register(ServiceIdentifiers.ICommandService, { useClass: CommandsService }, { lifecycle: Lifecycle.Singleton });
 
-  const settingsService = new SettingsService();
-  disposables.add(settingsService);
-  container.register(ServiceIdentifiers.ISettingsService, settingsService);
-
-  const commandService = new CommandsService();
-  disposables.add(commandService);
-  container.register(ServiceIdentifiers.ICommandService, commandService);
-
-  const shortcutsService = new ShortcutsService();
+  // Resolve services
+  const shortcutsService = container.resolve<ShortcutsService>(ServiceIdentifiers.IShortcutsService);
   disposables.add(shortcutsService);
-  container.register(ServiceIdentifiers.IShortcutsService, shortcutsService);
+
+  // Add all services that need to be disposed to the disposable store
+  disposables.add(container.resolve<EnvironmentService>(ServiceIdentifiers.IEnvironmentService));
+  disposables.add(container.resolve<SettingsService>(ServiceIdentifiers.ISettingsService));
+  disposables.add(container.resolve<CommandsService>(ServiceIdentifiers.ICommandService));
 
   // Initialize services
   await shortcutsService.initialize();

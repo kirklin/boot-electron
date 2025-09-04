@@ -2,7 +2,7 @@ import type { IEnvironmentService } from "~/main/features/environment/environmen
 import type { AppSettings } from "~/shared/types/settings";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { container } from "~/main/core/container";
+import { inject, singleton } from "tsyringe";
 import { ServiceIdentifiers } from "~/main/core/service-identifiers";
 import { Disposable } from "~/shared/lifecycle";
 
@@ -15,13 +15,14 @@ export interface ISettingsService {
   saveSettings: (settings: AppSettings) => Promise<void>;
 }
 
+@singleton()
 export class SettingsService extends Disposable implements ISettingsService {
-  private readonly envService: IEnvironmentService;
   private readonly settingsFile: string;
 
-  constructor() {
+  constructor(
+    @inject(ServiceIdentifiers.IEnvironmentService) private readonly envService: IEnvironmentService,
+  ) {
     super();
-    this.envService = container.get<IEnvironmentService>(ServiceIdentifiers.IEnvironmentService);
     this.settingsFile = path.join(this.envService.userDataPath, "settings.json");
   }
 

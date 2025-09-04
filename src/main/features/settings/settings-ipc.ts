@@ -2,13 +2,13 @@ import type { ISettingsService } from "./settings-service";
 import type { IDisposable } from "~/shared/lifecycle";
 import type { AppSettings } from "~/shared/types/settings";
 import { ipcMain } from "electron";
+import { container } from "tsyringe";
 import { IpcChannels } from "~/shared/constants/ipc-channels";
 import { toDisposable } from "~/shared/lifecycle";
-import { container } from "../../core/container";
 import { ServiceIdentifiers } from "../../core/service-identifiers";
 
 export function registerSettingsIpc(): IDisposable {
-  const settingsService = container.get<ISettingsService>(
+  const settingsService = container.resolve<ISettingsService>(
     ServiceIdentifiers.ISettingsService,
   );
 

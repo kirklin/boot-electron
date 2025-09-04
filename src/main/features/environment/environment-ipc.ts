@@ -1,13 +1,13 @@
 import type { IEnvironmentService } from "./environment-service";
 import type { IDisposable } from "~/shared/lifecycle";
 import { ipcMain } from "electron";
+import { container } from "tsyringe";
 import { IpcChannels } from "~/shared/constants/ipc-channels";
 import { toDisposable } from "~/shared/lifecycle";
-import { container } from "../../core/container";
 import { ServiceIdentifiers } from "../../core/service-identifiers";
 
 export function registerEnvironmentIpc(): IDisposable {
-  const environmentService = container.get<IEnvironmentService>(
+  const environmentService = container.resolve<IEnvironmentService>(
     ServiceIdentifiers.IEnvironmentService,
   );
 

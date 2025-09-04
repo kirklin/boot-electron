@@ -4,7 +4,7 @@ import type { Keybinding } from "~/shared/types/shortcuts";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { globalShortcut } from "electron";
-import { container } from "~/main/core/container";
+import { inject, singleton } from "tsyringe";
 import { ServiceIdentifiers } from "~/main/core/service-identifiers";
 import { BuiltinCommands } from "~/shared/constants/commands";
 import { Disposable } from "~/shared/lifecycle";
@@ -21,17 +21,17 @@ const DEFAULT_KEYBINDINGS: Keybinding[] = [
   { name: "Quit", key: "CmdOrCtrl+Q", command: BuiltinCommands.QUIT, source: "default" },
 ];
 
+@singleton()
 export class ShortcutsService extends Disposable implements IShortcutsService {
-  private readonly envService: IEnvironmentService;
-  private readonly commandService: ICommandService;
   private readonly keybindingsFile: string;
   private keybindings: Keybinding[] = [];
 
-  constructor() {
+  constructor(
+    @inject(ServiceIdentifiers.IEnvironmentService) private readonly envService: IEnvironmentService,
+    @inject(ServiceIdentifiers.ICommandService) private readonly commandService: ICommandService,
+  ) {
     super();
     this._register({ dispose: () => globalShortcut.unregisterAll() });
-    this.envService = container.get<IEnvironmentService>(ServiceIdentifiers.IEnvironmentService);
-    this.commandService = container.get<ICommandService>(ServiceIdentifiers.ICommandService);
     this.keybindingsFile = path.join(this.envService.userDataPath, "keybindings.json");
   }
 

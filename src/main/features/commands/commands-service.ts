@@ -1,9 +1,11 @@
 import type { ICommandEvent, ICommandService } from "~/shared/commands";
 import type { Event } from "~/shared/event";
+import { singleton } from "tsyringe";
 import { Emitter } from "~/shared/event";
 import { Disposable } from "~/shared/lifecycle";
 import { CommandsRegistry } from "./commands-registry";
 
+@singleton()
 export class CommandsService extends Disposable implements ICommandService {
   declare readonly _serviceBrand: undefined;
 
