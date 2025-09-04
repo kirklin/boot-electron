@@ -1,5 +1,6 @@
 import { app, BrowserWindow } from "electron";
 import started from "electron-squirrel-startup";
+import { DisposableStore } from "../shared/lifecycle";
 import { container } from "./core/container";
 import { IpcRouter } from "./core/ipc-router";
 import { ServiceIdentifiers } from "./core/service-identifiers";
@@ -13,16 +14,27 @@ if (started) {
   app.quit();
 }
 
+const disposables = new DisposableStore();
+app.on("will-quit", () => disposables.dispose());
+
 const windowManager = new WindowManager();
+disposables.add(windowManager);
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
   // Register all services before initializing anything else
-  container.register(ServiceIdentifiers.IEnvironmentService, new EnvironmentService());
-  container.register(ServiceIdentifiers.ISettingsService, new SettingsService());
+  const environmentService = new EnvironmentService();
+  disposables.add(environmentService);
+  container.register(ServiceIdentifiers.IEnvironmentService, environmentService);
+
+  const settingsService = new SettingsService();
+  disposables.add(settingsService);
+  container.register(ServiceIdentifiers.ISettingsService, settingsService);
+
   const shortcutsService = new ShortcutsService();
+  disposables.add(shortcutsService);
   container.register(ServiceIdentifiers.IShortcutsService, shortcutsService);
 
   // Initialize services
@@ -31,6 +43,7 @@ app.on("ready", async () => {
   windowManager.createWindow();
 
   const ipcRouter = new IpcRouter();
+  disposables.add(ipcRouter);
   ipcRouter.initialize();
 
   // Register all shortcuts after initialization

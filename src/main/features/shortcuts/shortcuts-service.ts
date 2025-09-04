@@ -5,6 +5,7 @@ import path from "node:path";
 import { app, BrowserWindow, globalShortcut } from "electron";
 import { container } from "~/main/core/container";
 import { ServiceIdentifiers } from "~/main/core/service-identifiers";
+import { Disposable } from "~/shared/lifecycle";
 
 export interface IShortcutsService {
   initialize: () => Promise<void>;
@@ -18,12 +19,14 @@ const DEFAULT_KEYBINDINGS: Keybinding[] = [
   { name: "Quit", key: "CmdOrCtrl+Q", command: "app.quit", source: "default" },
 ];
 
-export class ShortcutsService implements IShortcutsService {
+export class ShortcutsService extends Disposable implements IShortcutsService {
   private readonly envService: IEnvironmentService;
   private readonly keybindingsFile: string;
   private keybindings: Keybinding[] = [];
 
   constructor() {
+    super();
+    this._register({ dispose: () => globalShortcut.unregisterAll() });
     this.envService = container.get<IEnvironmentService>(ServiceIdentifiers.IEnvironmentService);
     this.keybindingsFile = path.join(this.envService.userDataPath, "keybindings.json");
   }

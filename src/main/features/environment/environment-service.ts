@@ -1,5 +1,6 @@
 import path from "node:path";
 import { app } from "electron";
+import { Disposable } from "~/shared/lifecycle";
 import pkg from "../../../../package.json";
 
 export interface IEnvironmentService {
@@ -12,7 +13,7 @@ export interface IEnvironmentService {
   readonly electronVersion: string;
 }
 
-export class EnvironmentService implements IEnvironmentService {
+export class EnvironmentService extends Disposable implements IEnvironmentService {
   get userDataPath(): string {
     return path.join(app.getPath("userData"), "User");
   }

@@ -1,10 +1,12 @@
 import type { IEnvironmentService } from "./environment-service";
+import type { IDisposable } from "~/shared/lifecycle";
 import { ipcMain } from "electron";
 import { IpcChannels } from "~/shared/constants/ipc-channels";
+import { toDisposable } from "~/shared/lifecycle";
 import { container } from "../../core/container";
 import { ServiceIdentifiers } from "../../core/service-identifiers";
 
-export function registerEnvironmentIpc() {
+export function registerEnvironmentIpc(): IDisposable {
   const environmentService = container.get<IEnvironmentService>(
     ServiceIdentifiers.IEnvironmentService,
   );
@@ -18,5 +20,9 @@ export function registerEnvironmentIpc() {
       chromeVersion: environmentService.chromeVersion,
       electronVersion: environmentService.electronVersion,
     };
+  });
+
+  return toDisposable(() => {
+    ipcMain.removeHandler(IpcChannels.GET_ENVIRONMENT);
   });
 }

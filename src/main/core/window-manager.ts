@@ -1,7 +1,8 @@
 import path from "node:path";
 import { BrowserWindow } from "electron";
+import { Disposable } from "~/shared/lifecycle";
 
-export class WindowManager {
+export class WindowManager extends Disposable {
   createWindow() {
     // Create the browser window.
     const mainWindow = new BrowserWindow({

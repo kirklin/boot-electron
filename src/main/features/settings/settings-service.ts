@@ -4,6 +4,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { container } from "~/main/core/container";
 import { ServiceIdentifiers } from "~/main/core/service-identifiers";
+import { Disposable } from "~/shared/lifecycle";
 
 const DEFAULT_SETTINGS: AppSettings = {
   theme: "system",
@@ -14,11 +15,12 @@ export interface ISettingsService {
   saveSettings: (settings: AppSettings) => Promise<void>;
 }
 
-export class SettingsService implements ISettingsService {
+export class SettingsService extends Disposable implements ISettingsService {
   private readonly envService: IEnvironmentService;
   private readonly settingsFile: string;
 
   constructor() {
+    super();
     this.envService = container.get<IEnvironmentService>(ServiceIdentifiers.IEnvironmentService);
     this.settingsFile = path.join(this.envService.userDataPath, "settings.json");
   }
