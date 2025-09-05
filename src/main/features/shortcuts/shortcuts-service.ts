@@ -47,7 +47,8 @@ export class ShortcutsService extends Disposable implements IShortcutsService {
       this.keybindings = this.mergeKeybindings(DEFAULT_KEYBINDINGS, userKeybindings);
     } catch {
       this.keybindings = DEFAULT_KEYBINDINGS;
-      await fs.writeFile(this.keybindingsFile, JSON.stringify(this.keybindings, null, 2));
+      await fs.mkdir(path.dirname(this.keybindingsFile), { recursive: true });
+      await fs.writeFile(this.keybindingsFile, JSON.stringify([], null, 2));
     }
   }
 
