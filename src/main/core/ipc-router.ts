@@ -1,3 +1,4 @@
+import { registerCommandsIpc } from "~/main/features/commands/commands-ipc";
 import { registerSettingsIpc } from "~/main/features/settings/settings-ipc";
 import { Disposable } from "~/shared/lifecycle";
 import { registerEnvironmentIpc } from "../features/environment/environment-ipc";
@@ -13,6 +14,9 @@ export class IpcRouter extends Disposable {
 
     const shortcutsIpcDisposable = registerShortcutsIpc();
     this._register(shortcutsIpcDisposable);
+
+    const commandsIpcDisposable = registerCommandsIpc();
+    this._register(commandsIpcDisposable);
 
     console.log("IPC Router Initialized");
   }

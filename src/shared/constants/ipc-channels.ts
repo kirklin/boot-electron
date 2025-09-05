@@ -8,4 +8,7 @@ export const IpcChannels = {
 
   // Shortcuts
   GET_KEYBINDINGS: "shortcuts:get-keybindings",
+
+  // Commands
+  COMMANDS_EXECUTE: "commands:execute",
 };
